@@ -12,6 +12,7 @@ namespace DLS.Description
 
 		// ---- Memory ----
 		dev_Ram_8Bit,
+		RAM_16Bit,
 		Rom_256x16,
 
 		// ---- Displays ----

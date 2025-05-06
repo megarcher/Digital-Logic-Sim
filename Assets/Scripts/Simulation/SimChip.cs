@@ -54,6 +54,7 @@ namespace DLS.Simulation
 
 			// ---- Initialize internal state ----
 			const int addressSize_8Bit = 256;
+			const int addressSize_16Bit = 65536;
 
 			if (ChipType is ChipType.DisplayRGB)
 			{
@@ -80,6 +81,10 @@ namespace DLS.Simulation
 					Simulator.rng.NextBytes(randomBytes);
 					InternalState[i] = BitConverter.ToUInt32(randomBytes);
 				}
+			}
+			else if (ChipType is ChipType.RAM_16Bit)
+			{
+				InternalState = new uint[addressSize_16Bit];
 			}
 			// Load in serialized persistent state (rom data, etc.)
 			else if (internalState is { Length: > 0 })

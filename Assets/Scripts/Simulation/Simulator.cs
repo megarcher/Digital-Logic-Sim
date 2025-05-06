@@ -560,6 +560,36 @@ namespace DLS.Simulation
 
 					break;
 				}
+				case ChipType.RAM_16Bit:
+					{
+                        const int ByteMask = 0b1111111111111111;
+                        //uint address = PinState.GetBitStates(chip.InputPins[0].State);
+						uint dataInPin = chip.InputPins[0].State;
+						uint addressPin = chip.InputPins[1].State;	
+						uint clkPin = chip.InputPins[4].State;	
+						uint resetPin = chip.InputPins[3].State;
+						uint writeEnablePin = chip.InputPins[2].State;
+
+						if (PinState.FirstBitHigh(writeEnablePin) && PinState.FirstBitHigh(clkPin))
+						{
+							//Write
+							uint data = PinState.GetBitStates(dataInPin);
+							chip.InternalState[PinState.GetBitStates(addressPin) ] = data;
+						}
+
+						if (PinState.FirstBitHigh(resetPin))
+						{
+							//Reset
+							Array.Clear(chip.InternalState, 0, chip.InternalState.Length);
+						}
+
+                        uint dataOut = chip.InternalState[PinState.GetBitStates(addressPin)];
+						
+                        chip.OutputPins[0].State = (ushort)(dataOut & ByteMask);
+
+
+                        break;
+                    }
 				case ChipType.Rom_256x16:
 				{
 					const int ByteMask = 0b11111111;
