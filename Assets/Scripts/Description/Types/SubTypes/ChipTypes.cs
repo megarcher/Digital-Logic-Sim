@@ -14,6 +14,7 @@ namespace DLS.Description
 		dev_Ram_8Bit,
 		RAM_16Bit,
 		Rom_256x16,
+		Rom_65536x16,
 
 		// ---- Displays ----
 		//TODO: Make all displays use 0 to 255 for RGB, and make sure you duplicate them first so only if needed overide them, also make the RGBLED

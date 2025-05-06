@@ -599,6 +599,14 @@ namespace DLS.Simulation
 					chip.OutputPins[1].State = (ushort)(data & ByteMask);
 					break;
 				}
+				case ChipType.Rom_65536x16:
+				{
+					//const int ByteMask = 0b1111111111111111;
+					uint address = PinState.GetBitStates(chip.InputPins[0].State);
+					uint data = chip.InternalState[address];
+					chip.OutputPins[0].State = (ushort)(data);
+					break;
+				}
 				// ---- Bus types ----
 				default:
 				{
