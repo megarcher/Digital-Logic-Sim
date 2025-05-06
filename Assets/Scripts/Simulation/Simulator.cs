@@ -393,8 +393,8 @@ namespace DLS.Simulation
 					SimPin in16 = chip.InputPins[0];
 					SimPin out8A = chip.OutputPins[0];
 					SimPin out8B = chip.OutputPins[1];
-					PinState.Set4BitFrom8BitSource(ref out8A.State, in16.State, false);
-					PinState.Set4BitFrom8BitSource(ref out8B.State, in16.State, true);
+					PinState.Set8BitFrom16BitSource(ref out8A.State, in16.State, false);
+					PinState.Set8BitFrom16BitSource(ref out8B.State, in16.State, true);
 					break;
 				}
 				case ChipType.TriStateBuffer:
