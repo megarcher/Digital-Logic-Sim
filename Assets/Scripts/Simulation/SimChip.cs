@@ -84,8 +84,8 @@ namespace DLS.Simulation
 			}
 			else if (ChipType is ChipType.RAM_16Bit)
 			{
-				InternalState = new uint[addressSize_16Bit];
-			}
+				InternalState = new uint[addressSize_16Bit + 1]; // +1 for clock state (to allow edge-trigger behaviour)
+            }
 			// Load in serialized persistent state (rom data, etc.)
 			else if (internalState is { Length: > 0 })
 			{

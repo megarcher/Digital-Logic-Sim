@@ -22,18 +22,18 @@
       },
       "BitCount":16,
       "Colour":0,
-      "ValueDisplayMode":0
+      "ValueDisplayMode":3
     },
     {
       "Name":"IN",
       "ID":814651928,
       "Position":{
-        "x":-6.76554,
-        "y":0.02825
+        "x":-7.48332,
+        "y":-0.39046
       },
       "BitCount":16,
       "Colour":0,
-      "ValueDisplayMode":0
+      "ValueDisplayMode":3
     },
     {
       "Name":"IN",

@@ -25,7 +25,8 @@ namespace DLS.Graphics
 			$"FIND CHIP    {shortcutTextCol}Ctrl+F",
 			$"LIBRARY      {shortcutTextCol}Ctrl+L",
 			$"PREFS        {shortcutTextCol}Ctrl+P",
-			$"QUIT         {shortcutTextCol}Ctrl+Q"
+            $"CONSOLE      {shortcutTextCol}Ctrl+C",
+            $"QUIT         {shortcutTextCol}Ctrl+Q"
 		};
 
 		const int NewChipButtonIndex = 0;
@@ -33,7 +34,8 @@ namespace DLS.Graphics
 		const int FindChipButtonIndex = 2;
 		const int LibraryButtonIndex = 3;
 		const int OptionsButtonIndex = 4;
-		const int QuitButtonIndex = 5;
+        const int ConsoleButtonIndex = 5;
+        const int QuitButtonIndex = 6;
 
 		// ---- State ----
 		static float scrollX;
@@ -65,7 +67,9 @@ namespace DLS.Graphics
 			}
 		}
 
-		static void DrawPopupMenu()
+        static void OpenConsoleMenu() => UIDrawer.SetActiveMenu(UIDrawer.MenuType.Console);
+
+        static void DrawPopupMenu()
 		{
 			ButtonTheme theme = DrawSettings.ActiveUITheme.MenuPopupButtonTheme;
 			float menuWidth = Draw.CalculateTextBoundsSize(menuButtonNames[0].AsSpan(), theme.fontSize, theme.font).x + 1;
@@ -112,7 +116,8 @@ namespace DLS.Graphics
 				else if (i == FindChipButtonIndex) OpenSearchMenu();
 				else if (i == LibraryButtonIndex) OpenLibraryMenu();
 				else if (i == OptionsButtonIndex) OpenPreferencesMenu();
-				else if (i == QuitButtonIndex) ExitToMainMenu();
+                else if (i == ConsoleButtonIndex) OpenConsoleMenu();
+                else if (i == QuitButtonIndex) ExitToMainMenu();
 			}
 		}
 
@@ -414,7 +419,8 @@ namespace DLS.Graphics
 			}
 
 			if (KeyboardShortcuts.PreferencesShortcutTriggered) OpenPreferencesMenu();
-			if (KeyboardShortcuts.QuitToMainMenuShortcutTriggered) ExitToMainMenu();
+            if (KeyboardShortcuts.ConsoleShortcutTriggered) OpenConsoleMenu();
+            if (KeyboardShortcuts.QuitToMainMenuShortcutTriggered) ExitToMainMenu();
 		}
 
 		public static void Reset()

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Concurrent;
 using DLS.Description;
 using DLS.Game;
+using NUnit.Framework;
 using UnityEngine;
 using Random = System.Random;
 
@@ -46,6 +47,11 @@ namespace DLS.Simulation
 		// * Ignore chip if inputs are same as last frame, and no internal pins changed state last frame.
 		//   (would have to make exception for chips containing things like clock or key chip, which can activate 'spontaneously')
 		// * Create simplified connections network allowing only builtin chips to be processed during simulation
+
+		public class ConsoleOutput
+		{
+			
+		}
 
 		public static void RunSimulationStep(SimChip rootSimChip, DevPinInstance[] inputPins)
 		{
@@ -563,18 +569,27 @@ namespace DLS.Simulation
 				case ChipType.RAM_16Bit:
 					{
                         const int ByteMask = 0b1111111111111111;
-                        //uint address = PinState.GetBitStates(chip.InputPins[0].State);
 						uint dataInPin = chip.InputPins[0].State;
 						uint addressPin = chip.InputPins[1].State;	
 						uint clkPin = chip.InputPins[4].State;	
 						uint resetPin = chip.InputPins[3].State;
 						uint writeEnablePin = chip.InputPins[2].State;
 
-						if (PinState.FirstBitHigh(writeEnablePin) && PinState.FirstBitHigh(clkPin))
+                        bool clockHigh = PinState.FirstBitHigh(clkPin);
+                        bool isRisingEdge = clockHigh && chip.InternalState[^1] == 0;
+                        chip.InternalState[^1] = clockHigh ? 1u : 0;
+
+                        if (PinState.FirstBitHigh(writeEnablePin) && isRisingEdge)
 						{
 							//Write
 							uint data = PinState.GetBitStates(dataInPin);
 							chip.InternalState[PinState.GetBitStates(addressPin) ] = data;
+
+							if (PinState.GetBitStates(addressPin) == 0xFF00) //0xFF00 is reserved for output
+							{
+								char c = (char)(PinState.GetBitStates(dataInPin & 0xFF)); //c = lower 8 bits ASCII char
+								Console.WriteLine(c);
+							}
 						}
 
 						if (PinState.FirstBitHigh(resetPin))
