@@ -23,6 +23,7 @@ namespace DLS.Description
 		DisplayDot,
 		DisplayLED,
 		DisplayRGBLED,
+		Console,
 
 		// ---- Merge / Split ----
 		//TODO: Make the 16 MERGES AND SPLITS atcually work

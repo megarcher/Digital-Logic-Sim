@@ -425,6 +425,10 @@ namespace DLS.Graphics
 			{
 				bounds = DrawDisplay_RGB(posWorld, scaleWorld, sim);
 			}
+			else if (display.DisplayType == ChipType.Console)
+			{
+                bounds = DrawDisplay_Console(posWorld, scaleWorld, sim);
+            }
 			else if (display.DisplayType == ChipType.DisplayDot)
 			{
 				bounds = DrawDisplay_Dot(posWorld, scaleWorld, sim);
@@ -439,7 +443,7 @@ namespace DLS.Graphics
 
 			else if (display.DisplayType == ChipType.DisplayRGBLED)
 			{
-				bool simActive = sim != null; 
+				bool simActive = sim != null;
 				bool isOn = simActive && sim.InputPins[0].FirstBitHigh;
 				bounds = DrawDisplay_DisplayRGBLED(posWorld, scaleWorld, isOn, sim);
 			}
@@ -451,6 +455,22 @@ namespace DLS.Graphics
 
 		public static Vector2 CalculateChipNameBounds(string name) => Draw.CalculateTextBoundsSize(name, FontSizeChipName, FontBold, ChipNameLineSpacing);
 
+
+		public static Bounds2D DrawDisplay_Console(Vector2 centre, float scale, SimChip simsource)
+		{
+			const int rows = 40;
+			const int charactersPerRow = 40;
+			if (simsource != null)
+			{
+				char tmp = (char)(simsource.InternalState[0]);
+				string text = tmp.ToString();
+				Debug.Log(text);
+
+				Draw.Quad(centre, Vector2.one * scale, Color.black);
+				Draw.Text(FontBold, text, FontSizeChipName, centre, Anchor.TextCentre, Color.white, ChipNameLineSpacing);
+			}
+			return Bounds2D.CreateFromCentreAndSize(centre, Vector2.one * scale);
+		}
 		public static Bounds2D DrawDisplay_RGB(Vector2 centre, float scale, SimChip simSource)
 		{
 			const int pixelsPerRow = 16;

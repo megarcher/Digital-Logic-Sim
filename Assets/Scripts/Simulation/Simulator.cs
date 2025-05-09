@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Linq;
 using DLS.Description;
 using DLS.Game;
 using UnityEngine;
@@ -570,7 +571,11 @@ namespace DLS.Simulation
 						uint resetPin = chip.InputPins[3].State;
 						uint writeEnablePin = chip.InputPins[2].State;
 
-						if (PinState.FirstBitHigh(writeEnablePin) && PinState.FirstBitHigh(clkPin))
+                        bool clockHigh = PinState.FirstBitHigh(clkPin);
+                        bool isRisingEdge = clockHigh && chip.InternalState[^1] == 0;
+                        chip.InternalState[^1] = clockHigh ? 1u : 0;
+
+                        if (PinState.FirstBitHigh(writeEnablePin) && isRisingEdge)
 						{
 							//Write
 							uint data = PinState.GetBitStates(dataInPin);
@@ -590,6 +595,21 @@ namespace DLS.Simulation
 
                         break;
                     }
+				case ChipType.Console:
+					{
+
+
+                        bool clockHigh = PinState.FirstBitHigh(chip.InputPins[2].State);
+                        bool isRisingEdge = clockHigh && chip.InternalState[^1] == 0;
+                        chip.InternalState[^1] = clockHigh ? 1u : 0;
+						uint writeData = chip.InputPins[0].State;
+                        if (PinState.FirstBitHigh(chip.InputPins[1].State) && isRisingEdge)
+						{
+							chip.InternalState[0] += chip.InputPins[0].State;
+                        }
+						
+						break;
+					}
 				case ChipType.Rom_256x16:
 				{
 					const int ByteMask = 0b11111111;

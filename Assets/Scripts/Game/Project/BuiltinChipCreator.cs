@@ -55,6 +55,7 @@ namespace DLS.Game
 				CreateDisplayDot(),
 				CreateDisplayLED(),
 				CreateDisplayRGBLED(),
+				CreateConsole(),
 				// ---- Bus ----
 				CreateBus(PinBitCount.Bit1),
 				CreateBusTerminus(PinBitCount.Bit1),
@@ -96,6 +97,34 @@ namespace DLS.Game
 			return CreateBuiltinChipDescription(ChipType.dev_Ram_8Bit, size, col, inputPins, outputPins);
 		}
 
+		static ChipDescription CreateConsole()
+		{
+            PinDescription[] inputPins = {
+                CreatePinDescription("DATA", 0, PinBitCount.Bit8),
+                CreatePinDescription("WRITE", 1),
+                CreatePinDescription("CLOCK", 2)
+                };
+
+            Color col = new(0.1f, 0.1f, 0.1f);
+            float height = SubChipInstance.MinChipHeightForPins(inputPins, null);
+            Vector2 size = new(GridSize * 10, height);
+            float displayWidth = size.x - GridSize * 2;
+
+            DisplayDescription[] displays =
+{
+                new()
+                {
+                    Position = Vector2.right * PinRadius / 3 * 0,
+                    Scale = displayWidth,
+                    SubChipID = -1
+                }
+            };
+
+
+
+
+            return CreateBuiltinChipDescription(ChipType.Console, size, col, inputPins, null, displays, true);
+        }
 		static ChipDescription CreateRAM_16()
 		{
 			Color col = new(0.85f, 0.45f, 0.3f);

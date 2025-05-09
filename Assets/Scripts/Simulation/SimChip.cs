@@ -82,10 +82,14 @@ namespace DLS.Simulation
 					InternalState[i] = BitConverter.ToUInt32(randomBytes);
 				}
 			}
+			else if (ChipType is ChipType.Console)
+			{
+				InternalState = new uint[5000];
+			}
 			else if (ChipType is ChipType.RAM_16Bit)
 			{
-				InternalState = new uint[addressSize_16Bit];
-			}
+				InternalState = new uint[addressSize_16Bit + 1]; // +1 for clock state (to allow edge-trigger behaviour)
+            }
 			// Load in serialized persistent state (rom data, etc.)
 			else if (internalState is { Length: > 0 })
 			{
