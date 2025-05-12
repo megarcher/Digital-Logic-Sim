@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Concurrent;
 using System.Linq;
+using System.Diagnostics;
 using DLS.Description;
 using DLS.Game;
-using UnityEngine;
 using Random = System.Random;
 
 namespace DLS.Simulation
@@ -11,6 +11,7 @@ namespace DLS.Simulation
 	public static class Simulator
 	{
 		public static readonly Random rng = new();
+		static readonly Stopwatch stopwatch = Stopwatch.StartNew();
 		public static int stepsPerClockTransition;
 		public static int simulationFrame;
 		static uint pcg_rngState;
@@ -22,15 +23,12 @@ namespace DLS.Simulation
 		public static bool canDynamicReorderThisFrame;
 
 		static SimChip prevRootSimChip;
+		static double elapsedSecondsOld;
+		static double deltaTime;
+		static SimAudio audioState;
 
 		// Modifications to the sim are made from the main thread, but only applied on the sim thread to avoid conflicts
 		static readonly ConcurrentQueue<SimModifyCommand> modificationQueue = new();
-
-		public static void UpdateKeyboardInputFromMainThread()
-		{
-			SimKeyboardHelper.RefreshInputState();
-		}
-
 
 		// ---- Simulation outline ----
 		// 1) Forward the initial player-controlled input states to all connected pins.
@@ -48,8 +46,11 @@ namespace DLS.Simulation
 		//   (would have to make exception for chips containing things like clock or key chip, which can activate 'spontaneously')
 		// * Create simplified connections network allowing only builtin chips to be processed during simulation
 
-		public static void RunSimulationStep(SimChip rootSimChip, DevPinInstance[] inputPins)
+		public static void RunSimulationStep(SimChip rootSimChip, DevPinInstance[] inputPins, SimAudio audioState)
 		{
+			Simulator.audioState = audioState;
+			audioState.InitFrame();
+
 			if (rootSimChip != prevRootSimChip)
 			{
 				needsOrderPass = true;
@@ -86,6 +87,26 @@ namespace DLS.Simulation
 			{
 				StepChip(rootSimChip);
 			}
+
+			UpdateAudioState();
+		}
+
+		public static void UpdateInPausedState()
+		{
+			if (audioState != null)
+			{
+				audioState.InitFrame();
+				UpdateAudioState();
+			}
+		}
+
+		static void UpdateAudioState()
+		{
+			double elapsedSeconds = stopwatch.Elapsed.TotalSeconds;
+			if (simulationFrame <= 1) deltaTime = 0;
+			else deltaTime = elapsedSeconds - elapsedSecondsOld;
+			elapsedSecondsOld = stopwatch.Elapsed.TotalSeconds;
+			audioState.NotifyAllNotesRegistered(deltaTime);
 		}
 
 		// Recursively propagate signals through this chip and its subchips
@@ -188,6 +209,11 @@ namespace DLS.Simulation
 			}
 
 			return nextSubChipIndex;
+		}
+
+		public static void UpdateKeyboardInputFromMainThread()
+		{
+			SimKeyboardHelper.RefreshInputState();
 		}
 
 		public static bool RandomBool()
@@ -619,6 +645,13 @@ namespace DLS.Simulation
 					chip.OutputPins[1].State = (ushort)(data & ByteMask);
 					break;
 				}
+				case ChipType.Buzzer:
+				{
+					int freqIndex = PinState.GetBitStates(chip.InputPins[0].State);
+					int volumeIndex = PinState.GetBitStates(chip.InputPins[1].State);
+					audioState.RegisterNote(freqIndex, (uint)volumeIndex);
+					break;
+				}
 				case ChipType.Rom_65536x16:
 				{
 					//const int ByteMask = 0b1111111111111111;
@@ -792,6 +825,8 @@ namespace DLS.Simulation
 		{
 			simulationFrame = 0;
 			modificationQueue?.Clear();
+			stopwatch.Restart();
+			elapsedSecondsOld = 0;
 		}
 
 		struct SimModifyCommand

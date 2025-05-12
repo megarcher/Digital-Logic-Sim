@@ -61,6 +61,10 @@ namespace DLS.Description
 		BusTerminus_8Bit,
 		Bus_16Bit,
 		BusTerminus_16Bit
+		BusTerminus_8Bit,
+		
+		// ---- Audio ----
+		Buzzer
 
 	}
 }
