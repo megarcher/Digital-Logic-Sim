@@ -62,6 +62,9 @@ namespace DLS.Game
 				CreateBusTerminus(PinBitCount.Bit4),
 				CreateBus(PinBitCount.Bit8),
 				CreateBusTerminus(PinBitCount.Bit8),
+				// ---- Audio ----
+				CreateBuzzer()
+				CreateBusTerminus(PinBitCount.Bit8),
 				CreateBus(PinBitCount.Bit16),
 				CreateBusTerminus(PinBitCount.Bit16 ),
 			};
@@ -76,6 +79,22 @@ namespace DLS.Game
 			PinDescription[] outputPins = { CreatePinDescription("OUT", 2) };
 
 			return CreateBuiltinChipDescription(ChipType.Nand, size, col, inputPins, outputPins);
+		}
+
+		static ChipDescription CreateBuzzer()
+		{
+			Color col = new(0, 0, 0);
+
+			PinDescription[] inputPins =
+			{
+				CreatePinDescription("PITCH", 1, PinBitCount.Bit8),
+				CreatePinDescription("VOLUME", 0, PinBitCount.Bit4),
+			};
+
+			float height = SubChipInstance.MinChipHeightForPins(inputPins, null);
+			Vector2 size = new(CalculateGridSnappedWidth(GridSize * 9), height);
+
+			return CreateBuiltinChipDescription(ChipType.Buzzer, size, col, inputPins, null, null);
 		}
 
 		static ChipDescription dev_CreateRAM_8()
@@ -154,7 +173,7 @@ namespace DLS.Game
 
 			PinDescription[] outputPins = { CreatePinDescription("OUT", 0) };
 
-			return CreateBuiltinChipDescription(ChipType.Key, size, col, null, outputPins, hideName: true);
+			return CreateBuiltinChipDescription(ChipType.Key, size, col, null, outputPins, null, NameDisplayLocation.Hidden);
 		}
 
 
@@ -241,12 +260,12 @@ namespace DLS.Game
 			{
 				new()
 				{
-					Position = Vector2.right * PinRadius / 3 * 0,
+					Position = Vector2.zero,
 					Scale = displayWidth,
 					SubChipID = -1
 				}
 			};
-			return CreateBuiltinChipDescription(ChipType.SevenSegmentDisplay, size, col, inputPins, null, displays, true);
+			return CreateBuiltinChipDescription(ChipType.SevenSegmentDisplay, size, col, inputPins, null, displays, NameDisplayLocation.Hidden);
 		}
 
 		static ChipDescription CreateDisplayRGB()
@@ -281,13 +300,13 @@ namespace DLS.Game
 			{
 				new()
 				{
-					Position = Vector2.right * PinRadius / 3 * 0,
+					Position = Vector2.zero,
 					Scale = displayWidth,
 					SubChipID = -1
 				}
 			};
 
-			return CreateBuiltinChipDescription(ChipType.DisplayRGB, size, col, inputPins, outputPins, displays, true);
+			return CreateBuiltinChipDescription(ChipType.DisplayRGB, size, col, inputPins, outputPins, displays, NameDisplayLocation.Hidden);
 		}
 
 		static ChipDescription CreateDisplayDot()
@@ -319,13 +338,13 @@ namespace DLS.Game
 			{
 				new()
 				{
-					Position = Vector2.right * PinRadius / 3 * 0,
+					Position = Vector2.zero,
 					Scale = displayWidth,
 					SubChipID = -1
 				}
 			};
 
-			return CreateBuiltinChipDescription(ChipType.DisplayDot, size, col, inputPins, outputPins, displays, true);
+			return CreateBuiltinChipDescription(ChipType.DisplayDot, size, col, inputPins, outputPins, displays, NameDisplayLocation.Hidden);
 		}
 
 		// (Not a chip, but convenient to treat it as one)
@@ -371,7 +390,7 @@ namespace DLS.Game
 
 			Color col = new(0.1f, 0.1f, 0.1f);
 
-			return CreateBuiltinChipDescription(type, BusChipSize(bitCount), col, inputs, outputs, hideName: true);
+			return CreateBuiltinChipDescription(type, BusChipSize(bitCount), col, inputs, outputs, null, NameDisplayLocation.Hidden);
 		}
 		static ChipDescription CreateDisplayRGBLED()
 		{
@@ -422,13 +441,13 @@ namespace DLS.Game
 			{
 				new()
 				{
-					Position = Vector2.right * PinRadius / 3 * 0,
+					Position = Vector2.zero,
 					Scale = displayWidth,
 					SubChipID = -1
 				}
 			};
 
-			return CreateBuiltinChipDescription(ChipType.DisplayLED, size, col, inputPins, null, displays, true);
+			return CreateBuiltinChipDescription(ChipType.DisplayLED, size, col, inputPins, null, displays, NameDisplayLocation.Hidden);
 		}
 
 
@@ -446,11 +465,11 @@ namespace DLS.Game
 			ChipDescription busOrigin = CreateBus(bitCount);
 			PinDescription[] inputs = { CreatePinDescription(busOrigin.Name, 0, bitCount) };
 
-			return CreateBuiltinChipDescription(type, BusChipSize(bitCount), busOrigin.Colour, inputs, hideName: true);
+			return CreateBuiltinChipDescription(type, BusChipSize(bitCount), busOrigin.Colour, inputs, null, null, NameDisplayLocation.Hidden);
 		}
 
 
-		static ChipDescription CreateBuiltinChipDescription(ChipType type, Vector2 size, Color col, PinDescription[] inputs = null, PinDescription[] outputs = null, DisplayDescription[] displays = null, bool hideName = false)
+		static ChipDescription CreateBuiltinChipDescription(ChipType type, Vector2 size, Color col, PinDescription[] inputs, PinDescription[] outputs, DisplayDescription[] displays = null, NameDisplayLocation nameLoc = NameDisplayLocation.Centre)
 		{
 			string name = ChipTypeHelper.GetName(type);
 			ValidatePinIDs(inputs, outputs, name);
@@ -458,7 +477,7 @@ namespace DLS.Game
 			return new ChipDescription
 			{
 				Name = name,
-				NameLocation = hideName ? NameDisplayLocation.Hidden : NameDisplayLocation.Centre,
+				NameLocation = nameLoc,
 				Colour = col,
 				Size = new Vector2(size.x, size.y),
 				InputPins = inputs ?? Array.Empty<PinDescription>(),
