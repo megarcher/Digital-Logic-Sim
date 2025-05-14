@@ -1,0 +1,110 @@
+{
+  "DLSVersion": "2.1.6",
+  "Name": "cmd",
+  "NameLocation": 0,
+  "ChipType": 0,
+  "Size": {
+    "x": 0.575,
+    "y": 1.0
+  },
+  "Colour": {
+    "r": 0.862664,
+    "g": 0.0143786445,
+    "b": 0.167066216,
+    "a": 1
+  },
+  "InputPins":[
+    {
+      "Name":"IN",
+      "ID":1084624974,
+      "Position":{
+        "x":-4.45637,
+        "y":0.1073
+      },
+      "BitCount":8,
+      "Colour":0,
+      "ValueDisplayMode":1
+    },
+    {
+      "Name":"IN",
+      "ID":562534146,
+      "Position":{
+        "x":-4.12733,
+        "y":-0.95136
+      },
+      "BitCount":1,
+      "Colour":0,
+      "ValueDisplayMode":0
+    },
+    {
+      "Name":"IN",
+      "ID":1119034733,
+      "Position":{
+        "x":-4.12733,
+        "y":-1.46636
+      },
+      "BitCount":1,
+      "Colour":0,
+      "ValueDisplayMode":0
+    }
+  ],
+  "OutputPins":[],
+  "SubChips":[
+    {
+      "Name":"Console",
+      "ID":1281934180,
+      "Label":"",
+      "Position":{
+        "x":0.72246,
+        "y":-0.29328
+      },
+      "OutputPinColourInfo":[],
+      "InternalData":null
+    }
+  ],
+  "Wires":[
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":1119034733
+      },
+      "TargetPinAddress":{
+        "PinID":2,
+        "PinOwnerID":1281934180
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":562534146
+      },
+      "TargetPinAddress":{
+        "PinID":1,
+        "PinOwnerID":1281934180
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":0.0,"y":0.0}]
+    },
+    {
+      "SourcePinAddress":{
+        "PinID":0,
+        "PinOwnerID":1084624974
+      },
+      "TargetPinAddress":{
+        "PinID":0,
+        "PinOwnerID":1281934180
+      },
+      "ConnectionType":0,
+      "ConnectedWireIndex":-1,
+      "ConnectedWireSegmentIndex":-1,
+      "Points":[{"x":0.0,"y":0.0},{"x":0.0,"y":0.0}]
+    }
+  ],
+  "Displays": null
+}

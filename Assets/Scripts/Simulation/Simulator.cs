@@ -624,14 +624,28 @@ namespace DLS.Simulation
 				case ChipType.Console:
 					{
 
-
-                        bool clockHigh = PinState.FirstBitHigh(chip.InputPins[2].State);
+                        bool clockHigh = PinState.FirstBitHigh(chip.InputPins[3].State);
                         bool isRisingEdge = clockHigh && chip.InternalState[^1] == 0;
                         chip.InternalState[^1] = clockHigh ? 1u : 0;
 						uint writeData = chip.InputPins[0].State;
                         if (PinState.FirstBitHigh(chip.InputPins[1].State) && isRisingEdge)
 						{
-							chip.InternalState[0] += chip.InputPins[0].State;
+							if (writeData == 0x08) // Backspace
+							{
+								chip.InternalState[^2] -= 1;
+								chip.InternalState[chip.InternalState[^2]] = 0;
+							}
+							else
+							{
+                                chip.InternalState[chip.InternalState[^2]] = chip.InputPins[0].State;
+                                chip.InternalState[^2] += 1;
+                            }
+								
+                        }
+						if (PinState.FirstBitHigh(chip.InputPins[2].State))
+						{
+                            chip.InternalState[^2] = 0;
+
                         }
 						
 						break;

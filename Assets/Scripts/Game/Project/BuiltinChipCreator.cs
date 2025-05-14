@@ -120,13 +120,15 @@ namespace DLS.Game
             PinDescription[] inputPins = {
                 CreatePinDescription("DATA", 0, PinBitCount.Bit8),
                 CreatePinDescription("WRITE", 1),
-                CreatePinDescription("CLOCK", 2)
+				CreatePinDescription("RESET", 2),
+                CreatePinDescription("CLOCK", 3)
+				
                 };
 
             Color col = new(0.1f, 0.1f, 0.1f);
             float height = SubChipInstance.MinChipHeightForPins(inputPins, null);
-            Vector2 size = new(GridSize * 10, height);
-            float displayWidth = size.x - GridSize * 2;
+            Vector2 size = new(GridSize * 80, height * 5);
+            float displayWidth = (size.x - GridSize);
 
             DisplayDescription[] displays =
 {
@@ -141,7 +143,7 @@ namespace DLS.Game
 
 
 
-            return CreateBuiltinChipDescription(ChipType.Console, size, col, inputPins, null, displays, true);
+            return CreateBuiltinChipDescription(ChipType.Console, size, col, inputPins, null, displays, NameDisplayLocation.Hidden);
         }
 		static ChipDescription CreateRAM_16()
 		{

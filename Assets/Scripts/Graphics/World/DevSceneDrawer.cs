@@ -425,7 +425,7 @@ namespace DLS.Graphics
 			}
 			else if (display.DisplayType == ChipType.Console)
 			{
-                bounds = DrawDisplay_Console(posWorld, scaleWorld, sim);
+                bounds = DrawDisplay_Console(posWorld, scaleWorld * 5, sim);
             }
 			else if (display.DisplayType == ChipType.DisplayDot)
 			{
@@ -466,8 +466,16 @@ namespace DLS.Graphics
 			const int charactersPerRow = 40;
 			if (simsource != null)
 			{
-				char tmp = (char)(simsource.InternalState[0]);
-				string text = tmp.ToString();
+				string text = "";
+
+				for (int i = 0; i < simsource.InternalState[^2]; i++)
+				{
+					ushort binary = Convert.ToUInt16(simsource.InternalState[i]);
+					int asciiValue = binary & 0xFF;
+					char character = (char)asciiValue;
+					text += character;
+				}
+
 				Debug.Log(text);
 
 				Draw.Quad(centre, Vector2.one * scale, Color.black);
