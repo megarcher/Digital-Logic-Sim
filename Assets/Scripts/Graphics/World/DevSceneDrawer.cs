@@ -619,7 +619,7 @@ namespace DLS.Graphics
 						1
 					);
 			}
-			Color col = isOn ? onColor : ActiveTheme.DisplayLEDCols[0];
+			Color col = isOn ? onColor : ActiveTheme.DisplayLEDCols;
 			Draw.Quad(centre, pixelDrawSize, col);
 			return Bounds2D.CreateFromCentreAndSize(centre, Vector2.one * scale);
 		}

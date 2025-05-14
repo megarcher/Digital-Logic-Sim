@@ -64,8 +64,7 @@ namespace DLS.Game
 				CreateBus(PinBitCount.Bit8),
 				CreateBusTerminus(PinBitCount.Bit8),
 				// ---- Audio ----
-				CreateBuzzer()
-				CreateBusTerminus(PinBitCount.Bit8),
+				CreateBuzzer(),
 				CreateBus(PinBitCount.Bit16),
 				CreateBusTerminus(PinBitCount.Bit16 ),
 			};
@@ -449,7 +448,7 @@ namespace DLS.Game
 				}
 			};
 
-			return CreateBuiltinChipDescription(ChipType.DisplayRGBLED, size, col, inputPins, null, displays, true);
+			return CreateBuiltinChipDescription(ChipType.DisplayRGBLED, size, col, inputPins, null, displays, NameDisplayLocation.Hidden);
 		}
 		static ChipDescription CreateDisplayLED()
 		{
