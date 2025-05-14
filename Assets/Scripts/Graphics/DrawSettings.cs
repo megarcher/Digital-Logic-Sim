@@ -224,6 +224,7 @@ namespace DLS.Graphics
 			public Color BackgroundCol;
 			public Color DevPinHandle;
 			public Color DevPinHandleHighlighted;
+			public Color DisplayLEDCols;
 			public Color GridCol;
 			public Color PinCol;
 			public Color PinHighlightCol;
