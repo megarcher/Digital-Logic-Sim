@@ -19,6 +19,7 @@ namespace DLS.Description
 			{ ChipType.Rom_256x16, $"ROM 256{mulSymbol}16" },
 			{ ChipType.Rom_65536x16, $"ROM 65536{mulSymbol}" },
 			{ ChipType.RAM_16Bit, "RAM-16" },
+			{ ChipType.IO_RAM, "IO-RAM" },
 			// ---- Split / Merge ----
 			{ ChipType.Split_4To1Bit, "4-1BIT" },
 			{ ChipType.Split_8To1Bit, "8-1BIT" },
@@ -73,7 +74,7 @@ namespace DLS.Description
 
 		public static bool IsBusTerminusType(ChipType type) => type is ChipType.BusTerminus_1Bit or ChipType.BusTerminus_4Bit or ChipType.BusTerminus_8Bit or ChipType.BusTerminus_16Bit;
 
-		public static bool IsRomType(ChipType type) => type is ChipType.Rom_256x16 or ChipType.Rom_65536x16;
+		public static bool IsRomType(ChipType type) => type is ChipType.Rom_256x16 or ChipType.Rom_65536x16 or ChipType.IO_RAM;
 
 		public static ChipType GetCorrespondingBusTerminusType(ChipType type)
 		{

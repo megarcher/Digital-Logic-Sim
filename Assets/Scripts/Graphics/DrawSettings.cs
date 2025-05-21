@@ -25,7 +25,7 @@ namespace DLS.Graphics
 		public const float SubChipPinInset = 0.015f;
 		public const float SelectionBoundsPadding = 0.08f;
 		public const float ChipOutlineWidth = 0.05f;
-		public const float WireThickness = 0.025f;
+		public const float WireThickness = 0.015f;
 		public const float WireHighlightedThickness = WireThickness + 0.012f;
 		public const float GridThickness = 0.0035f;
 		public const float DevPinStateDisplayRadius = 0.2f;

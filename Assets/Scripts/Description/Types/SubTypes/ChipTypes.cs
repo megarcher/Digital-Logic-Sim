@@ -13,6 +13,7 @@ namespace DLS.Description
 		// ---- Memory ----
 		dev_Ram_8Bit,
 		RAM_16Bit,
+		IO_RAM,
 		Rom_256x16,
 		Rom_65536x16,
 

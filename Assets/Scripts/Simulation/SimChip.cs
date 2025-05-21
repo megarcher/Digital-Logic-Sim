@@ -84,10 +84,14 @@ namespace DLS.Simulation
 			}
 			else if (ChipType is ChipType.RAM_16Bit)
 			{
-				InternalState = new uint[addressSize_16Bit];
+				InternalState = new uint[addressSize_16Bit + 1];
 			}
-			// Load in serialized persistent state (rom data, etc.)
-			else if (internalState is { Length: > 0 })
+            else if (ChipType is ChipType.IO_RAM)
+            {
+                InternalState = new uint[addressSize_16Bit + 1];
+            }
+            // Load in serialized persistent state (rom data, etc.)
+            else if (internalState is { Length: > 0 })
 			{
 				InternalState = new uint[internalState.Length];
 				UpdateInternalState(internalState);

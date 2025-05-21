@@ -596,7 +596,11 @@ namespace DLS.Simulation
 						uint resetPin = chip.InputPins[3].State;
 						uint writeEnablePin = chip.InputPins[2].State;
 
-						if (PinState.FirstBitHigh(writeEnablePin) && PinState.FirstBitHigh(clkPin))
+                        bool clockHigh = PinState.FirstBitHigh(clkPin);
+                        bool isRisingEdge = clockHigh && chip.InternalState[^1] == 0;
+                        chip.InternalState[^1] = clockHigh ? 1u : 0;
+
+                        if (PinState.FirstBitHigh(writeEnablePin) && isRisingEdge)
 						{
 							//Write
 							uint data = PinState.GetBitStates(dataInPin);
@@ -616,7 +620,53 @@ namespace DLS.Simulation
 
                         break;
                     }
-				case ChipType.Rom_256x16:
+				case ChipType.IO_RAM:
+                    {
+                        const int ByteMask = 0b1111111111111111;
+                        //uint address = PinState.GetBitStates(chip.InputPins[0].State);
+                        uint dataInPin = chip.InputPins[0].State;
+                        uint addressPin = chip.InputPins[1].State;
+                        uint addressROPin = chip.InputPins[2].State;
+                        uint INPUT = chip.InputPins[3].State;
+                        uint inputEnable = chip.InputPins[4].State;
+                        uint writeEnablePin = chip.InputPins[5].State;
+                        uint resetPin = chip.InputPins[6].State;
+                        uint clkPin = chip.InputPins[7].State;
+
+
+
+                        bool clockHigh = PinState.FirstBitHigh(clkPin);
+                        bool isRisingEdge = clockHigh && chip.InternalState[^1] == 0;
+                        chip.InternalState[^1] = clockHigh ? 1u : 0;
+
+                        if (PinState.FirstBitHigh(writeEnablePin) && isRisingEdge) // Write to RAM
+                        {
+                            //Write
+                            uint data = PinState.GetBitStates(dataInPin);
+                            chip.InternalState[PinState.GetBitStates(addressPin)] = data;
+                        }
+
+                        if (PinState.FirstBitHigh(inputEnable) && isRisingEdge) // Input write
+                        {
+
+                            uint input = PinState.GetBitStates(INPUT);
+                            chip.InternalState[0xff01] = input;
+                        }
+
+                        if (PinState.FirstBitHigh(resetPin))
+                        {
+                            //Reset
+                            Array.Clear(chip.InternalState, 0, chip.InternalState.Length);
+                        }
+
+
+                        chip.OutputPins[0].State = (ushort)(chip.InternalState[PinState.GetBitStates(addressPin)] & ByteMask);
+                        chip.OutputPins[1].State = (ushort)(chip.InternalState[PinState.GetBitStates(addressROPin)] & ByteMask);
+
+
+                        break;
+                    }
+                case ChipType.Rom_256x16:
 				{
 					const int ByteMask = 0b11111111;
 					uint address = PinState.GetBitStates(chip.InputPins[0].State);
@@ -634,7 +684,7 @@ namespace DLS.Simulation
 				}
 				case ChipType.Rom_65536x16:
 				{
-					//const int ByteMask = 0b1111111111111111;
+					const int ByteMask = 0b1111111111111111;
 					uint address = PinState.GetBitStates(chip.InputPins[0].State);
 					uint data = chip.InternalState[address];
 					chip.OutputPins[0].State = (ushort)(data);
