@@ -88,7 +88,9 @@ namespace DLS.Simulation
 			}
             else if (ChipType is ChipType.IO_RAM)
             {
-                InternalState = new uint[addressSize_16Bit + 1];
+                InternalState = new uint[(addressSize_16Bit * 2) + 1]; // defaultdata:runtimedata + 1 for clock state
+				Array.Copy(internalState, 0, InternalState, 0, 65536); // Copy the ROM data to the first half of InternalState
+				Array.Copy(internalState, 0, InternalState, 65536, 65536); // Copy the ROM data to the second half of the InternalState
             }
             // Load in serialized persistent state (rom data, etc.)
             else if (internalState is { Length: > 0 })

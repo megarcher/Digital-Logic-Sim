@@ -293,7 +293,16 @@ namespace DLS.Game
 		public void NotifyRomContentsEdited(SubChipInstance romChip)
 		{
 			SimChip simChip = rootSimChip.GetSubChipFromID(romChip.ID);
-			simChip.UpdateInternalState(romChip.InternalData);
+			if (simChip.ChipType is ChipType.IO_RAM)
+			{
+                Array.Copy(romChip.InternalData, 0, simChip.InternalState, 0, 65536); // Copy the ROM data to the first half of InternalState
+                Array.Copy(romChip.InternalData, 0, simChip.InternalState, 65536, 65536); // Copy the ROM data to the second half of the InternalState
+            }
+			else
+			{
+                simChip.UpdateInternalState(romChip.InternalData);
+            }
+
 		}
 
 		public void NotifyLEDColourChanged(SubChipInstance ledChip, uint colIndex)

@@ -643,25 +643,24 @@ namespace DLS.Simulation
                         {
                             //Write
                             uint data = PinState.GetBitStates(dataInPin);
-                            chip.InternalState[PinState.GetBitStates(addressPin)] = data;
+                            chip.InternalState[PinState.GetBitStates(addressPin) + 65536] = data; // +65536 to overwrite the runtime data
                         }
 
                         if (PinState.FirstBitHigh(inputEnable) && isRisingEdge) // Input write
                         {
 
                             uint input = PinState.GetBitStates(INPUT);
-                            chip.InternalState[0xff01] = input;
+                            chip.InternalState[0xff01 + 65536] = input;
                         }
 
                         if (PinState.FirstBitHigh(resetPin))
                         {
-                            //Reset
-                            Array.Clear(chip.InternalState, 0, chip.InternalState.Length);
+							//Reset
+							Array.Copy(chip.InternalState, 0, chip.InternalState, 65536, 65536); // Resets the runtime data to the ROM data
                         }
 
-
-                        chip.OutputPins[0].State = (ushort)(chip.InternalState[PinState.GetBitStates(addressPin)] & ByteMask);
-                        chip.OutputPins[1].State = (ushort)(chip.InternalState[PinState.GetBitStates(addressROPin)] & ByteMask);
+                        chip.OutputPins[0].State = (ushort)(chip.InternalState[PinState.GetBitStates(addressPin) + 65536] & ByteMask);
+                        chip.OutputPins[1].State = (ushort)(chip.InternalState[PinState.GetBitStates(addressROPin) + 65536] & ByteMask);
 
 
                         break;
